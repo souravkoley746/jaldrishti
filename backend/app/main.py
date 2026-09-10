@@ -43,7 +43,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # Shutdown
     logger.info(f"Shutting down {settings.PROJECT_NAME} backend engine...")
     await close_mongo_connection()
-    await engine.dispose()
+    if engine is not None:
+        await engine.dispose()
     logger.info("Database connection pool closed successfully.")
 
 
