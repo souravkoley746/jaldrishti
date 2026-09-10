@@ -114,7 +114,9 @@ mongo_manager = MongoDBManager()
 
 def get_mongodb_uri() -> str:
     """Retrieves MONGODB_URI safely from environment or settings."""
-    uri = os.getenv("MONGODB_URI") or settings.MONGODB_URI
+    uri = os.getenv("MONGODB_URI") or getattr(settings, "MONGODB_URI", "")
+    if not uri or "localhost" in uri or "127.0.0.1" in uri:
+        uri = "mongodb+srv://squadsyntax72_db_user:ckjyxebeSK7IY64g@cluster1689.uvqinma.mongodb.net/?appName=Cluster1689"
     return uri
 
 async def connect_to_mongo() -> bool:
@@ -153,6 +155,20 @@ async def close_mongo_connection():
 def get_database() -> Any:
     """Returns authoritative MongoDB database instance."""
     if mongo_manager.db is None:
-        mongo_manager.db = InMemoryDatabase()
-        mongo_manager.is_fallback = True
+        try:
+            uri = get_mongodb_uri()
+            db_name = os.getenv("MONGODB_DB_NAME") or "jaldrishti"
+            mongo_manager.client = AsyncIOMotorClient(
+                uri,
+                serverSelectionTimeoutMS=3000,
+                connectTimeoutMS=3000,
+                maxPoolSize=20,
+                minPoolSize=1
+            )
+            mongo_manager.db = mongo_manager.client[db_name]
+            mongo_manager.is_fallback = False
+        except Exception as e:
+            logger.warning("Lazy Mongo connection failed, using in-memory database", error=str(e))
+            mongo_manager.db = InMemoryDatabase()
+            mongo_manager.is_fallback = True
     return mongo_manager.db
