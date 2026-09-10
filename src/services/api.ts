@@ -3,7 +3,17 @@
  * Handles authenticated API calls for accounts, profile locations, and community feedback.
  */
 
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+const getApiBaseUrl = (): string => {
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    return 'https://jaldrishti-backend.onrender.com/api/v1';
+  }
+  return 'http://localhost:8000/api/v1';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 export const getAuthToken = (): string | null => {
   if (typeof window === 'undefined') return null;

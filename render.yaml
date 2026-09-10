@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: jaldrishti-backend
+    env: python
+    region: singapore
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port 
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB_NAME
+        value: jaldrishti
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHONPATH
+        value: backend
