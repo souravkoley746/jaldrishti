@@ -1,0 +1,32 @@
+# Node dependencies
+node_modules/
+
+# Build & Dist outputs
+dist/
+build/
+coverage/
+
+# Environment files & Secrets
+.env
+.env.*
+!.env.example
+
+# Python Cache & Virtual Environments
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# OS & Editor & System
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.antigravity/
+
+# Logs & Scratch
+*.log
+scratch/
